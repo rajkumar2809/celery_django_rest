@@ -1,0 +1,3 @@
+# celery -A first_project worker -l info --pool=solo
+# celery -A first_project worker -l info --pool=prefork –autoscale=10,3
+# celery -A first_project worker -l info --pool=threads
