@@ -21,6 +21,7 @@ urlpatterns = [
   path('admin/', admin.site.urls),
   path('basic/' , views.home),
   path('mdl_post_string/', views.post),
-  path('mdl_get_string/', views.get),
-
+  path('mdl_get_string/', views.get),  
+  path('application_cms/', views.cms_post),
+  path('application_get_cms/', views.cms_get),
 ]

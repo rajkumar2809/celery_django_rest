@@ -5,11 +5,11 @@ from django.shortcuts import render
 import json
 from django.http import HttpResponse
 from middleapp.models import mdl_string
-from middleapp.serializers import MdlStringSerializer
+from middleapp.serializers import *
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from middleapp.tasks import  send_data_through_celery
+from middleapp.tasks import  send_data_through_celery , cms_application_celery123
 
 # Create your views here.
 
@@ -35,5 +35,23 @@ def post(request):
         # serializer.save()
         # print("serializer is valid")
         responsess = send_data_through_celery.delay(json.dumps(request.data))
-        return HttpResponse("{}".format(responsess)) # Response(request.data , status = status.HTTP_201_CREATED)  # 
-    return Response(request.data , status = status.HTTP_400_BAD_REQUEST)                                
+        return HttpResponse("{}".format(responsess)) 
+    return Response(request.data , status = status.HTTP_400_BAD_REQUEST)
+
+# APi for CMS Application or for application_cms modal
+
+@api_view(['GET'])
+def cms_get(request):
+    cms_data = application_cms.objects.all().values()
+    return Response( {"data": cms_data})
+
+
+@api_view(['post'])
+def cms_post(request):
+    serializer = ApplicationCmsSerializer(data=request.data)
+
+    if serializer.is_valid():
+        print("serializer is valid")
+        responsess = cms_application_celery123.delay(json.dumps(request.data))
+        return HttpResponse("{}".format(responsess)) 
+    return Response(request.data , status = status.HTTP_400_BAD_REQUEST)
