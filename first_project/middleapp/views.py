@@ -25,7 +25,7 @@ def index(request):
 @csrf_exempt
 def delete_all(request):
     
-    if request.method == "POST" and request.is_ajax():
+    if request.method == "POST" and (request.headers.get('x-requested-with') == 'XMLHttpRequest'):
         print("Delete button clicked")
         application_cms.objects.all().delete()
         data = application_cms.objects.all().count()
