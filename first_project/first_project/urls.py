@@ -20,6 +20,8 @@ from middleapp import views
 urlpatterns = [
   path('admin/', admin.site.urls),
   path('basic/' , views.home),
+  path('home/' , views.index , name= "home"),
+  path('delete/' , views.delete_all , name= "delete"),
   path('mdl_post_string/', views.post),
   path('mdl_get_string/', views.get),  
   path('application_cms/', views.cms_post),

@@ -1,3 +1,4 @@
+from pydoc import render_doc
 from django.shortcuts import render
 
 # Create your views here.
@@ -11,8 +12,24 @@ from rest_framework.response import Response
 from rest_framework import status
 from middleapp.tasks import  send_data_through_celery , cms_application_celery123
 import logging
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
+
+
+def index(request):
+    data = application_cms.objects.all().count()
+    print(data)
+    return render(request , "index.html" , {"data":data})
+
+@csrf_exempt
+def delete_all(request):
+    
+    if request.method == "POST" and request.is_ajax():
+        print("Delete button clicked")
+        application_cms.objects.all().delete()
+        data = application_cms.objects.all().count()
+    return HttpResponse(data)
 def home(request):
     ud = 10
     name = "dj"
@@ -36,6 +53,8 @@ def post(request):
         # print("serializer is valid")
         responsess = send_data_through_celery.delay(json.dumps(request.data))
         return HttpResponse("{}".format(responsess)) 
+        # return Response(request.data , status = status.HTTP_201_CREATED)
+
     return Response(request.data , status = status.HTTP_400_BAD_REQUEST)
 
 # APi for CMS Application or for application_cms modal
@@ -55,7 +74,7 @@ def cms_post(request):
     ac_nm = rqst_data['acknowledgementNumber']
     print("Acnmber is ", ac_nm)
     srvc_id = rqst_data['serviceId']
-    logger.info(str(ac_nm) + " " + "-" +  " " + str(srvc_id) + " " ) #"0#+ "-" + " " +  _Service )
+    logger.info(str(ac_nm) + " " + "-" +  " " + str(srvc_id) + " " )
     # logger.info(_Service)
     if serializer.is_valid():
         # print("serializer is valid")
