@@ -124,6 +124,41 @@ USE_L10N = True
 USE_TZ = False
 
 
+
+
+# to add logs
+
+LOGGING ={
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters':{
+        'main_formatter':{
+            'format': "{asctime} - {levelname} - {message} ",
+            "style": "{",
+        }
+    },
+    'handlers':{
+        'console':{
+            'class': "logging.StreamHandler",
+            'formatter':'main_formatter',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'info.log',
+            'formatter': 'main_formatter',
+        },
+    },
+    'loggers': {
+        'main':{
+          'handlers': ['file', 'console'],
+          'propagate': True,
+          'level': "INFO",
+        },
+    },
+}
+#log end
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 

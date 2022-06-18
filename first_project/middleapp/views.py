@@ -10,7 +10,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from middleapp.tasks import  send_data_through_celery , cms_application_celery123
-
+import logging
 # Create your views here.
 
 def home(request):
@@ -49,9 +49,17 @@ def cms_get(request):
 @api_view(['post'])
 def cms_post(request):
     serializer = ApplicationCmsSerializer(data=request.data)
-
+    csm_data = json.dumps(request.data)
+    rqst_data = json.loads(csm_data)
+    logger = logging.getLogger('main')
+    ac_nm = rqst_data['acknowledgementNumber']
+    print("Acnmber is ", ac_nm)
+    srvc_id = rqst_data['serviceId']
+    logger.info(str(ac_nm) + " " + "-" +  " " + str(srvc_id) + " " ) #"0#+ "-" + " " +  _Service )
+    # logger.info(_Service)
     if serializer.is_valid():
-        print("serializer is valid")
+        # print("serializer is valid")
         responsess = cms_application_celery123.delay(json.dumps(request.data))
-        return HttpResponse("{}".format(responsess)) 
+        return HttpResponse("{}".format(responsess))
+    print(serializer.errors) 
     return Response(request.data , status = status.HTTP_400_BAD_REQUEST)
