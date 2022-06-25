@@ -31,3 +31,7 @@ class application_cms(models.Model):
     designatedOfficerId = models.IntegerField()
     description = models.CharField(max_length = 100)
 
+
+class encrypted_cms(models.Model):
+    enc_data = models.CharField(max_length=1000)
+

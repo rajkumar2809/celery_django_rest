@@ -10,3 +10,8 @@ class ApplicationCmsSerializer(serializers.ModelSerializer):
     class Meta:
         model = application_cms
         fields = '__all__'
+
+class EncyptedCmsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = encrypted_cms
+        fields = '__all__'

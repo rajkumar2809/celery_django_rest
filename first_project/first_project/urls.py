@@ -26,4 +26,5 @@ urlpatterns = [
   path('mdl_get_string/', views.get),  
   path('application_cms/', views.cms_post),
   path('application_get_cms/', views.cms_get),
+  path('encrypted_cms/<int:id>', views.enc_post),
 ]

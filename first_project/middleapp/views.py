@@ -10,9 +10,11 @@ from middleapp.serializers import *
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from middleapp.tasks import  send_data_through_celery , cms_application_celery123
+from middleapp.tasks import  send_data_through_celery , cms_application_celery123 , send_enc_data_to_celery
 import logging
 from django.views.decorators.csrf import csrf_exempt
+import pymongo
+
 # Create your views here.
 
 
@@ -82,3 +84,16 @@ def cms_post(request):
         return HttpResponse("{}".format(responsess))
     print(serializer.errors) 
     return Response(request.data , status = status.HTTP_400_BAD_REQUEST)
+
+@api_view(['post'])
+def enc_post(request , id):
+
+    serviceId = id
+    enc_d = request.body
+
+    try:
+        decode_byte = enc_d.decode()
+        responsess = send_enc_data_to_celery.delay(decode_byte , serviceId)
+        return HttpResponse("{}".format(responsess))
+    except Exception as e:
+        return HttpResponse(e)
