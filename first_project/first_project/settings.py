@@ -84,10 +84,29 @@ WSGI_APPLICATION = 'first_project.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'MIDDLE_APPLICATION',
+#      }
+# }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'eappeal_bse',
+#      }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'MIDDLE_APPLICATION',
+        'NAME': 'test_db',
+        'CLIENT': {
+           'host': "mongodb://staging.secuodsoft.com",
+            'port': 27666
+        }
+
      }
 }
 

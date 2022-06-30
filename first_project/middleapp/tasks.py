@@ -28,7 +28,7 @@ def cms_application_celery123(data):
     cms_data = json.loads(data)
     # print("Data  from cms_application_celery",cms_data)
     try:
-        saveto_cms_db = application_cms (action = cms_data['action'] , acknowledgementNumber = cms_data['acknowledgementNumber'] , departmentId = cms_data['departmentId'] , 
+        saveto_cms_db = cms_application_2 ( acknowledgementNumber = cms_data['acknowledgementNumber'] , departmentId = cms_data['departmentId'] , 
                                         serviceId = cms_data['serviceId'] , districtId = cms_data['districtId'] , blockId = cms_data['blockId'] , tahasilId = cms_data['tahasilId'] ,
                                         grampanchayatId = cms_data['grampanchayatId'] , officeId = cms_data['officeId'] , applicationStatus = cms_data['applicationStatus'] , 
                                         applicantName = cms_data['applicantName'] , applicantAddress = cms_data['applicantAddress'] , applicantPhoneNo = cms_data['applicantPhoneNo'] , 
@@ -45,29 +45,13 @@ def cms_application_celery123(data):
 def send_enc_data_to_celery(token  , sid):
 
     crypted_token = token
-    serviceId = sid
+    service_Id = sid
     decryption_key = ""
-    print(serviceId)
-    try:    
-        myclient = pymongo.MongoClient("mongodb://staging.secuodsoft.com:27666/")
-        if myclient:
-            print("connected succesfully")
-            mydb = myclient["eappeal_bse"]
-            mycol = mydb["service"] 
-            eappeal_data = mycol.find() 
-            # eappeal_data_count = mycol.count_documents({}) #count() 
-    except Exception as e:
-        print(e)
-
-    if (eappeal_data):
-        for data in eappeal_data:
-            # print(data)
-            if (data["serviceId"] == serviceId):
-                decryption_key = data["apiKey"]
-                print("data api key is {}" .format(data["apiKey"]))
-    else:
-        # print("======No data found==========")
-        return HttpResponse("No service found in the selected database ")
+    print(service_Id)
+    data = service.objects.all().filter(serviceId = service_Id)
+    # print(data[0].apiKey)
+    decryption_key = data[0].apiKey
+    
 
     if (decryption_key != ""):
         key = bytes(decryption_key, encoding="ascii")
@@ -84,7 +68,7 @@ def send_enc_data_to_celery(token  , sid):
             print(decode_byte)
 
             str_json = json.loads(decode_byte)
-            saveto_cms_db = application_cms (action = "post" , acknowledgementNumber = str_json['appData']['acknowledgementNumber'] , departmentId = str_json['appData']['departmentId'] , 
+            saveto_cms_db = cms_application_2 (acknowledgementNumber = str_json['appData']['acknowledgementNumber'] , departmentId = str_json['appData']['departmentId'] , 
                                             serviceId = str_json['appData']['serviceId'] , districtId = str_json['appData']['districtId'] , blockId = str_json['appData']['blockId'] , tahasilId = str_json['appData']['tahasilId'] ,
                                             grampanchayatId = str_json['appData']['grampanchayatId'] , officeId = str_json['appData']['officeId'] , applicationStatus = str_json['appData']['applicationStatus'] , 
                                             applicantName = str_json['appData']['applicantName'] , applicantAddress = str_json['appData']['applicantAddress'] , applicantPhoneNo = str_json['appData']['applicantPhoneNo'] , 

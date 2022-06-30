@@ -8,7 +8,7 @@ class MdlStringSerializer(serializers.ModelSerializer):
 
 class ApplicationCmsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = application_cms
+        model = cms_application_2
         fields = '__all__'
 
 class EncyptedCmsSerializer(serializers.ModelSerializer):

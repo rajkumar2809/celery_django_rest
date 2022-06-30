@@ -6,9 +6,8 @@ class mdl_string(models.Model):
     name = models.CharField(max_length=150 )
 
 
-class application_cms(models.Model):
+class cms_application_2(models.Model):
 
-    action = models.CharField(max_length = 50)
     acknowledgementNumber = models.CharField(max_length = 50)
     departmentId = models.IntegerField()
     serviceId = models.IntegerField()
@@ -35,3 +34,26 @@ class application_cms(models.Model):
 class encrypted_cms(models.Model):
     enc_data = models.CharField(max_length=1000)
 
+
+
+class service(models.Model):
+    
+    serviceId = models.IntegerField()
+    serviceName = models.CharField(max_length= 200)
+    departmentId = models.IntegerField()
+    departmentName = models.CharField(max_length= 200)
+    designatedOfficer = models.IntegerField()
+    appellateAuthority = models.IntegerField()
+    revisionalAuthority = models.IntegerField()
+    timeLimit = models.CharField(max_length=100)
+    apiKey = models.CharField(max_length= 30)
+    url = models.CharField(max_length = 300)
+    ipAddress = models.CharField(max_length=100)
+    status = models.CharField(max_length=20)
+    createdDate = models.CharField(max_length=50)
+    createdTime = models.CharField(max_length=50)
+    updatedDate = models.CharField(max_length=50)
+    updatedTime = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = "service"

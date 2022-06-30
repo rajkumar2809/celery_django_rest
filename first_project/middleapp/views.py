@@ -20,7 +20,7 @@ import pymongo
 
 
 def index(request):
-    data = application_cms.objects.all().count()
+    data = cms_application_2.objects.all().count()
     print(data)
     return render(request , "index.html" , {"data":data})
 
@@ -29,8 +29,8 @@ def delete_all(request):
     
     if request.method == "POST" and (request.headers.get('x-requested-with') == 'XMLHttpRequest'):
         print("Delete button clicked")
-        application_cms.objects.all().delete()
-        data = application_cms.objects.all().count()
+        cms_application_2.objects.all().delete()
+        data = cms_application_2.objects.all().count()
     return HttpResponse(data)
 def home(request):
     ud = 10
@@ -59,11 +59,11 @@ def post(request):
 
     return Response(request.data , status = status.HTTP_400_BAD_REQUEST)
 
-# APi for CMS Application or for application_cms modal
+# APi for CMS Application or for cms_application_2 modal
 
 @api_view(['GET'])
 def cms_get(request):
-    cms_data = application_cms.objects.all().values()
+    cms_data = cms_application_2.objects.all().values()
     return Response( {"data": cms_data})
 
 
@@ -86,9 +86,15 @@ def cms_post(request):
     return Response(request.data , status = status.HTTP_400_BAD_REQUEST)
 
 @api_view(['post'])
-def enc_post(request , id):
+def enc_post(request , st):
+    # print(st)
 
-    serviceId = id
+    service = st
+    # print(service.split("=")[1])
+    serviceId = int(service.split("=")[1])
+    print(serviceId)
+    # print(type(serviceId))
+    # serviceId = id
     enc_d = request.body
 
     try:
