@@ -13,6 +13,26 @@
             <div class="col-md-12">
                 <h1 style="margin-top: 10px;" > Total Data : <mark id="dlt_data" >{{data}}</mark></h1>
                 <button type="button" class="btn btn-danger" style="margin-top: 10px; text-align: center;" onclick=delete_all()>Delete</button>
+                <!-- bootstrap card -->
+                    <div class="row">
+                        {% for t in test_lst %}
+                        <div class="col-sm-4">
+                        <div class="card">
+                            <div class="card-body">
+                            <!-- <h5 class="card-title">{{t.s_name}}</h5> -->
+                            <h5 class="card-title">Service Id = {{t.s_id}}</h5>
+                            <p class="card-text">ServiceName = {{t.s_name}}</p>
+                            <p class="card-text">DepartMent Name = {{t.d_name}}</p>
+                            <p class="card-text">No of Application =  {{t.s_count}}</p>
+                            <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                            </div>
+                        </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                <!-- bootstrap card -->
+
             </div>
         </div>
     </div>

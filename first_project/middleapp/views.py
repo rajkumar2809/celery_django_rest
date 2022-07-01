@@ -18,11 +18,37 @@ import pymongo
 # Create your views here.
 
 
+class TestDat:
+    def __init__(self , srvce_nme , srvce_id , departmentName , count):
+        self.s_name = srvce_nme
+        self.s_id = srvce_id
+        self.d_name = departmentName
+        self.s_count = count
+
 
 def index(request):
     data = cms_application_2.objects.all().count()
+    service_obj = service.objects.all()
+    service_count = service.objects.all().count()
+    no_of_application = []
+    test_lst= []
+    test_obj= {"srvce_nme":None}
+    # print("service_count = ",service_count )
+    test_lst = [] #empty array
+
+    for i in range(1, service_count+1):
+        service_ob = service.objects.filter(serviceId = i)
+    #     # print(service_ob[0].serviceName)
+        print(i)
+        srvce_nme = service_ob[0].serviceName
+        srvce_id = service_ob[0].serviceId
+        departmentName = service_ob[0].departmentName
+        count = cms_application_2.objects.filter(serviceId = i).count()
+        test_lst.append(TestDat(srvce_nme ,srvce_id , departmentName  ,count ))
+
     print(data)
-    return render(request , "index.html" , {"data":data})
+    return render(request , "index.html" , {"data":data , "test_lst":test_lst}) 
+    
 
 @csrf_exempt
 def delete_all(request):
