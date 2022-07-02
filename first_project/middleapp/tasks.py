@@ -11,18 +11,6 @@ from cryptography.hazmat.backends import default_backend
 import pymongo
 
 @shared_task
-def send_data_through_celery(data):
-    data1 = json.loads(data)
-    # print("Data 1 from tasks",data1)
-    try:
-        saveto_db = mdl_string (uid = data1['uid'] , name = data1['name'] )
-        saveto_db.save()
-        return HttpResponse("status {} " .format(status.HTTP_201_CREATED))
-    except Exception as e:
-        return HttpResponse("Exception from tasks {} " .format(e))
-
-
-@shared_task
 def cms_application_celery123(data):
     # print("========data received=========")
     cms_data = json.loads(data)
@@ -68,15 +56,23 @@ def send_enc_data_to_celery(token  , sid):
             print(decode_byte)
 
             str_json = json.loads(decode_byte)
-            saveto_cms_db = cms_application_2 (acknowledgementNumber = str_json['appData']['acknowledgementNumber'] , departmentId = str_json['appData']['departmentId'] , 
-                                            serviceId = str_json['appData']['serviceId'] , districtId = str_json['appData']['districtId'] , blockId = str_json['appData']['blockId'] , tahasilId = str_json['appData']['tahasilId'] ,
-                                            grampanchayatId = str_json['appData']['grampanchayatId'] , officeId = str_json['appData']['officeId'] , applicationStatus = str_json['appData']['applicationStatus'] , 
-                                            applicantName = str_json['appData']['applicantName'] , applicantAddress = str_json['appData']['applicantAddress'] , applicantPhoneNo = str_json['appData']['applicantPhoneNo'] , 
-                                            applicationReceivedDate = str_json['appData']['applicationReceivedDate'] , lastDate = str_json['appData']['lastDate'] , deliveryStatus = str_json['appData']['deliveryStatus'] ,
-                                            deliveryDate = str_json['appData']['deliveryDate'] , rejectedReason = str_json['appData']['rejectedReason'] , applyMode = str_json['appData']['applyMode'] , 
-                                            designatedOfficerName = str_json['appData']['designatedOfficerName'] , designatedOfficerId = str_json['appData']['designatedOfficerId'] , description = str_json['appData']['description']  )
-            saved = saveto_cms_db.save()
-            return Response(saved , status.HTTP_201_CREATED)
+            print(str_json['appData']['apiKey'])
+            status = 1
+            eappeal_status = 0
+            revision_status = 0
+            if (decryption_key != str_json['appData']['apiKey'] ):
+                print("Api Key invalid or mismatched not matching")
+                # return Response("Api Key invalid or mismatched"  , status.HTTP_401_UNAUTHORIZED)
+            else:
+                saveto_cms_db = cms_application_2 (apiKey = str_json['appData']['apiKey'],applicationId = str_json['appData']['applicationId'], acknowledgementNumber = str_json['appData']['acknowledgementNumber'] , departmentId = str_json['appData']['departmentId'] , 
+                                                serviceId = str_json['appData']['serviceId'] , districtId = str_json['appData']['districtId'] , blockId = str_json['appData']['blockId'] , tahasilId = str_json['appData']['tahasilId'] ,
+                                                grampanchayatId = str_json['appData']['grampanchayatId'] , officeId = str_json['appData']['officeId'] , applicationStatus = str_json['appData']['applicationStatus'] , 
+                                                applicantName = str_json['appData']['applicantName'] , applicantAddress = str_json['appData']['applicantAddress'] , applicantPhoneNo = str_json['appData']['applicantPhoneNo'] , 
+                                                applicationReceivedDate = str_json['appData']['applicationReceivedDate'] , lastDate = str_json['appData']['lastDate'] , deliveryStatus = str_json['appData']['deliveryStatus'] , appealStatus = eappeal_status , revisionStatus = revision_status ,
+                                                deliveryDate = str_json['appData']['deliveryDate'] , rejectedReason = str_json['appData']['rejectedReason'] , applyMode = str_json['appData']['applyMode'] , 
+                                                designatedOfficerName = str_json['appData']['designatedOfficerName'] , designatedOfficerId = str_json['appData']['designatedOfficerId'] , description = str_json['appData']['description'] , status = status  )
+                saved = saveto_cms_db.save()
+                return Response(saved , status.HTTP_201_CREATED)
 
 
         except Exception as e:

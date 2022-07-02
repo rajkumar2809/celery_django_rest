@@ -5,16 +5,18 @@ from django.shortcuts import render
 from django.shortcuts import render
 import json
 from django.http import HttpResponse
-from middleapp.models import mdl_string
+from middleapp.models import *
 from middleapp.serializers import *
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from middleapp.tasks import  send_data_through_celery , cms_application_celery123 , send_enc_data_to_celery
+from middleapp.tasks import  *
 import logging
 from django.views.decorators.csrf import csrf_exempt
 import pymongo
+from celery.result import AsyncResult as _AR
 
+from celery import app
 # Create your views here.
 
 
@@ -48,7 +50,7 @@ def index(request):
 
     print(data)
     return render(request , "index.html" , {"data":data , "test_lst":test_lst}) 
-    
+
 
 @csrf_exempt
 def delete_all(request):
@@ -68,24 +70,6 @@ def home(request):
     except Exception as e:
         return HttpResponse("Data saving faailed on first application , due to {}".format(e))
 
-@api_view(['GET'])
-def get(request):
-    data = mdl_string.objects.all().values()
-    return Response( {"data": data})
-
-@api_view(['post'])
-def post(request):
-    serializer = MdlStringSerializer(data=request.data)
-    if serializer.is_valid():
-        # serializer.save()
-        # print("serializer is valid")
-        responsess = send_data_through_celery.delay(json.dumps(request.data))
-        return HttpResponse("{}".format(responsess)) 
-        # return Response(request.data , status = status.HTTP_201_CREATED)
-
-    return Response(request.data , status = status.HTTP_400_BAD_REQUEST)
-
-# APi for CMS Application or for cms_application_2 modal
 
 @api_view(['GET'])
 def cms_get(request):
@@ -118,7 +102,7 @@ def enc_post(request , st):
     service = st
     # print(service.split("=")[1])
     serviceId = int(service.split("=")[1])
-    print(serviceId)
+    # print(serviceId)
     # print(type(serviceId))
     # serviceId = id
     enc_d = request.body

@@ -1,13 +1,22 @@
+from pydoc import classname
+from statistics import mode
 from django.db import models
+from datetime import datetime
+from datetime import date
 
-# Create your models here.
-class mdl_string(models.Model):
-    uid = models.CharField(max_length=20)
-    name = models.CharField(max_length=150 )
+def get_current_date():
+    dt = date.today()
+    return dt
+
+def get_current_time():
+    tm = datetime.now().strftime('%H:%M:%S')
+    return tm
 
 
 class cms_application_2(models.Model):
 
+    apiKey = models.CharField(max_length=50)
+    applicationId  = models.IntegerField()
     acknowledgementNumber = models.CharField(max_length = 50)
     departmentId = models.IntegerField()
     serviceId = models.IntegerField()
@@ -17,6 +26,8 @@ class cms_application_2(models.Model):
     grampanchayatId = models.IntegerField()
     officeId = models.IntegerField()
     applicationStatus = models.IntegerField()
+    appealStatus = models.IntegerField()
+    revisionStatus = models.IntegerField()
     applicantName = models.CharField(max_length = 40 )
     applicantAddress = models.CharField(max_length = 100)
     applicantPhoneNo = models.BigIntegerField()
@@ -29,12 +40,14 @@ class cms_application_2(models.Model):
     designatedOfficerName = models.CharField(max_length = 40)
     designatedOfficerId = models.IntegerField()
     description = models.CharField(max_length = 100)
+    status = models.IntegerField()
+    creatd_date = models.CharField(max_length=50 ,  default=get_current_date())
+    created_time = models.CharField( max_length=50 , default= get_current_time())
+    updated_date = models.CharField(max_length=50 , default=get_current_date())
+    updated_time = models.CharField(max_length=50 , default= get_current_time())
 
-
-class encrypted_cms(models.Model):
-    enc_data = models.CharField(max_length=1000)
-
-
+    class Meta:
+        db_table = "cms_application_2"
 
 class service(models.Model):
     

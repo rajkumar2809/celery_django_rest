@@ -22,10 +22,7 @@ urlpatterns = [
   path('basic/' , views.home),
   path('' , views.index , name= "home"),
   path('delete/' , views.delete_all , name= "delete"),
-  path('mdl_post_string/', views.post),
-  path('mdl_get_string/', views.get),  
   path('application_cms/', views.cms_post),
   path('application_get_cms/', views.cms_get),
-#   path('<int:id>', views.enc_post),
   path('<str:st>', views.enc_post),
 ]
