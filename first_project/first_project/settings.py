@@ -101,7 +101,7 @@ WSGI_APPLICATION = 'first_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'test_db',
+        'NAME': 'eappeal_bse',
         'CLIENT': {
            'host': "mongodb://staging.secuodsoft.com",
             'port': 27666
