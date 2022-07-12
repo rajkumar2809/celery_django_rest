@@ -14,7 +14,7 @@ from middleapp.tasks import  *
 import logging
 from django.views.decorators.csrf import csrf_exempt
 import pymongo
-from celery.result import AsyncResult
+from celery.result import AsyncResult as _AR
 
 from celery import app
 # Create your views here.
@@ -29,9 +29,9 @@ class TestDat:
 
 
 def index(request):
-    data = cms_application_2.objects.using('secondary').all().count()
-    service_obj = service.objects.using('secondary').all()
-    service_count = service.objects.using('secondary').all().count()
+    data = cms_application_2.objects.all().count()
+    service_obj = service.objects.all()
+    service_count = service.objects.all().count()
     no_of_application = []
     test_lst= []
     test_obj= {"srvce_nme":None}
@@ -39,13 +39,13 @@ def index(request):
     test_lst = [] #empty array
 
     for i in range(1, service_count+1):
-        service_ob = service.objects.using('secondary').filter(serviceId = i)
+        service_ob = service.objects.filter(serviceId = i)
     #     # print(service_ob[0].serviceName)
-        # print(i)
+        print(i)
         srvce_nme = service_ob[0].serviceName
         srvce_id = service_ob[0].serviceId
         departmentName = service_ob[0].departmentName
-        count = cms_application_2.objects.using('secondary').filter(serviceId = i).count()
+        count = cms_application_2.objects.filter(serviceId = i).count()
         test_lst.append(TestDat(srvce_nme ,srvce_id , departmentName  ,count ))
 
     print(data)
@@ -57,13 +57,23 @@ def delete_all(request):
     
     if request.method == "POST" and (request.headers.get('x-requested-with') == 'XMLHttpRequest'):
         print("Delete button clicked")
-        cms_application_2.objects.using('secondary').all().delete()
-        data = cms_application_2.objects.using('secondary').all().count()
+        cms_application_2.objects.all().delete()
+        data = cms_application_2.objects.all().count()
     return HttpResponse(data)
+def home(request):
+    ud = 10
+    name = "dj"
+    try:
+        data = mdl_string(uid = ud , name = name)
+        data.save()
+        return HttpResponse("Data saved on first application successfully")
+    except Exception as e:
+        return HttpResponse("Data saving faailed on first application , due to {}".format(e))
+
 
 @api_view(['GET'])
 def cms_get(request):
-    cms_data = cms_application_2.objects.using('secondary').all().values()
+    cms_data = cms_application_2.objects.all().values()
     return Response( {"data": cms_data})
 
 
@@ -89,26 +99,17 @@ def cms_post(request):
 def enc_post(request , st):
     # print(st)
 
-    srvc = st
+    service = st
     # print(service.split("=")[1])
-    service_Id = int(srvc.split("=")[1])
+    serviceId = int(service.split("=")[1])
+    # print(serviceId)
+    # print(type(serviceId))
+    # serviceId = id
     enc_d = request.body
-    # test if service exists according to id or not
-    data = service.objects.using('secondary').filter(serviceId = service_Id).exists()
 
-    if data == False:
-        response = {"status_code":409 , "msg":"Service Id not found"}
-        return HttpResponse(response)
-
-    else:
-        try:
-            decode_byte = enc_d.decode()
-            responsess = send_enc_data_to_celery.delay(decode_byte , service_Id)
-            print("The response is {}".format(responsess))
-            result = AsyncResult(responsess.id)
-            rtrn = result.get()
-            # print("=========Returned from celery is =======")
-            # print(rtrn)
-            return HttpResponse("{}".format(rtrn))
-        except Exception as e:
-            return HttpResponse(e)
+    try:
+        decode_byte = enc_d.decode()
+        responsess = send_enc_data_to_celery.delay(decode_byte , serviceId)
+        return HttpResponse("{}".format(responsess))
+    except Exception as e:
+        return HttpResponse(e)
