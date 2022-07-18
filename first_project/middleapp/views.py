@@ -1,3 +1,4 @@
+from http.client import responses
 from pydoc import render_doc
 from django.shortcuts import render
 
@@ -15,7 +16,6 @@ import logging
 from django.views.decorators.csrf import csrf_exempt
 import pymongo
 from celery.result import AsyncResult
-
 from celery import app
 # Create your views here.
 
@@ -97,18 +97,30 @@ def enc_post(request , st):
     data = service.objects.using('secondary').filter(serviceId = service_Id).exists()
 
     if data == False:
-        response = {"status_code":409 , "msg":"Service Id not found"}
-        return HttpResponse(response)
+        print(data)
+        msg = "Service Id not found"
+        # response ={"status_code":421 , "msg":msg} 
+        response = {"status_code":409 , "msg":msg}
+        return HttpResponse("{}".format(response))
 
     else:
         try:
             decode_byte = enc_d.decode()
             responsess = send_enc_data_to_celery.delay(decode_byte , service_Id)
-            print("The response is {}".format(responsess))
+            logger = logging.getLogger('main')
+            logger.info(str(service_Id) + " " + "-" +  " " + responsess.id)
+
+
             result = AsyncResult(responsess.id)
             rtrn = result.get()
-            # print("=========Returned from celery is =======")
-            # print(rtrn)
+            print(type(rtrn))
+            # for key in rtrn:
+            #     print(key.status_code)
+            # print(rtrn['status'])
+            print(rtrn['status_code'])
+            print(rtrn['msg'])
+            logger.info(responsess.id + " " + "-" +  " " + str(rtrn['status_code']) + " " + "-" +  " " + rtrn['msg'])
+
             return HttpResponse("{}".format(rtrn))
         except Exception as e:
             return HttpResponse(e)

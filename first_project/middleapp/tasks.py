@@ -69,7 +69,6 @@ def send_enc_data_to_celery(token  , sid):
                 # print("Api Key invalid or mismatched not matching")
                 msg = " Data saving failed . Api Key invalid or mismatched not matching"
                 response ={"status_code":421 , "msg":msg} 
-                # return Response("Api Key invalid or mismatched"  , status.HTTP_401_UNAUTHORIZED)
                 return response
             else:
                 # sleep(2)
@@ -83,7 +82,6 @@ def send_enc_data_to_celery(token  , sid):
                 saved = saveto_cms_db.save(using="secondary")
                 msg = "Data saved successfully"
                 response = {"status_code":200,"msg":msg}
-                # sleep(2)
                 return response
         except Exception as e:
             response = {"status_code":413,"msg":e}
@@ -91,6 +89,4 @@ def send_enc_data_to_celery(token  , sid):
     else:
         msg = "Api key not found"
         response = {"status_code":411,"msg":msg}
-
-        # return HttpResponse("Key not found")
         return response
