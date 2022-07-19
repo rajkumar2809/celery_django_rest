@@ -113,14 +113,10 @@ def enc_post(request , st):
 
             result = AsyncResult(responsess.id)
             rtrn = result.get()
-            print(type(rtrn))
-            # for key in rtrn:
-            #     print(key.status_code)
-            # print(rtrn['status'])
-            print(rtrn['status_code'])
-            print(rtrn['msg'])
             logger.info(responsess.id + " " + "-" +  " " + str(rtrn['status_code']) + " " + "-" +  " " + rtrn['msg'])
-
             return HttpResponse("{}".format(rtrn))
-        except Exception as e:
-            return HttpResponse(e)
+            
+        except json.decoder.JSONDecodeError:
+            msg = "Invalid request"
+            response ={"status_code":434 , "msg":msg} 
+            return HttpResponse("{}".format(response))
