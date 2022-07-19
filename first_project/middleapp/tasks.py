@@ -31,14 +31,14 @@ def cms_application_celery123(data):
         return HttpResponse(e)
 
 
-@shared_task(serializer='json')
+@shared_task()
 def send_enc_data_to_celery(token  , sid):
 
     crypted_token = token
-    _ = sid
+    service_Id = sid
     decryption_key = ""
-    print(_)
-    data = service.objects.using('secondary').all().filter(serviceId = _)
+    print(service_Id)
+    data = service.objects.using('secondary').all().filter(serviceId = service_Id)
     print(data[0].apiKey)
     decryption_key = data[0].apiKey
     
@@ -120,7 +120,7 @@ def send_enc_data_to_celery(token  , sid):
                     response = {"status_code":419,"msg":msg}
                     # sleep(2)
                     return response
-                    
+
         except json.decoder.JSONDecodeError:
                 print("There was a  in input")
                 msg = "Something went wrong due to data mismatched"

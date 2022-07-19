@@ -84,11 +84,11 @@ CELERY_CACHE_BACKEND = 'django-cache'
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'eappeal_middle',
+       'NAME': 'ortpsa_result',
        'USER': 'postgres',
-       'PASSWORD': 'cntx@123',
-       'HOST': 'localhost',
-       'PORT': '5432',
+       'PASSWORD': 'postgres',
+    #    'HOST': '127.0.0.1',
+    #    'PORT': '5432',
    },
     'secondary': {
         'ENGINE': 'djongo',
