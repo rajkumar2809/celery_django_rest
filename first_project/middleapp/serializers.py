@@ -3,5 +3,5 @@ from .models import *
 
 class ApplicationCmsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = cms_application_2
+        model = cms_application
         fields = '__all__'

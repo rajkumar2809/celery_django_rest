@@ -18,7 +18,7 @@ def cms_application_celery123(data):
     cms_data = json.loads(data)
     # print("Data  from cms_application_celery",cms_data)
     try:
-        saveto_cms_db = cms_application_2 ( acknowledgementNumber = cms_data['acknowledgementNumber'] , departmentId = cms_data['departmentId'] , 
+        saveto_cms_db = cms_application ( acknowledgementNumber = cms_data['acknowledgementNumber'] , departmentId = cms_data['departmentId'] , 
                                         serviceId = cms_data['serviceId'] , districtId = cms_data['districtId'] , blockId = cms_data['blockId'] , tahasilId = cms_data['tahasilId'] ,
                                         grampanchayatId = cms_data['grampanchayatId'] , officeId = cms_data['officeId'] , applicationStatus = cms_data['applicationStatus'] , 
                                         applicantName = cms_data['applicantName'] , applicantAddress = cms_data['applicantAddress'] , applicantPhoneNo = cms_data['applicantPhoneNo'] , 
@@ -257,7 +257,7 @@ def send_enc_data_to_celery(token  , sid):
                         if flt_srv:
                             print("====department have the service====")
                             
-                            saveto_cms_db = cms_application_2 (apiKey = api_Key,applicationId = application_Id, acknowledgementNumber = acknowledgement_Number , departmentId = department_Id , serviceId = _service_Id , districtId = district_Id , blockId = block_Id , tahasilId = tahasil_Id ,
+                            saveto_cms_db = cms_application (apiKey = api_Key,applicationId = application_Id, acknowledgementNumber = acknowledgement_Number , departmentId = department_Id , serviceId = _service_Id , districtId = district_Id , blockId = block_Id , tahasilId = tahasil_Id ,
                                                             grampanchayatId = grampanchayat_Id , officeId = office_Id , applicationStatus = application_Status , 
                                                             applicantName = applicant_Name , applicantAddress = applicant_Address , applicantPhoneNo = applicant_PhoneNo , 
                                                             applicationReceivedDate = applicationReceived_Date , lastDate = last_Date , deliveryStatus = delivery_Status , appealStatus = eappeal_status , revisionStatus = revision_status ,

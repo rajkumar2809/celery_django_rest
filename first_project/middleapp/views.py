@@ -29,7 +29,7 @@ class TestDat:
 
 
 def index(request):
-    data = cms_application_2.objects.using('secondary').all().count()
+    data = cms_application.objects.using('secondary').all().count()
     service_obj = service.objects.using('secondary').all()
     service_count = service.objects.using('secondary').all().count()
     no_of_application = []
@@ -45,7 +45,7 @@ def index(request):
         srvce_nme = service_ob[0].serviceName
         srvce_id = service_ob[0].serviceId
         departmentName = service_ob[0].departmentName
-        count = cms_application_2.objects.using('secondary').filter(serviceId = i).count()
+        count = cms_application.objects.using('secondary').filter(serviceId = i).count()
         test_lst.append(TestDat(srvce_nme ,srvce_id , departmentName  ,count ))
 
     print(data)
@@ -57,13 +57,13 @@ def delete_all(request):
     
     if request.method == "POST" and (request.headers.get('x-requested-with') == 'XMLHttpRequest'):
         print("Delete button clicked")
-        cms_application_2.objects.using('secondary').all().delete()
-        data = cms_application_2.objects.using('secondary').all().count()
+        cms_application.objects.using('secondary').all().delete()
+        data = cms_application.objects.using('secondary').all().count()
     return HttpResponse(data)
 
 @api_view(['GET'])
 def cms_get(request):
-    cms_data = cms_application_2.objects.using('secondary').all().values()
+    cms_data = cms_application.objects.using('secondary').all().values()
     return Response( {"data": cms_data})
 
 

@@ -4,9 +4,9 @@ from django.contrib import admin
 from middleapp.models import *
 
 
-class cms_application_2_Admin(admin.ModelAdmin):
+class cms_application_Admin(admin.ModelAdmin):
     list_display = ["id","applicationId","acknowledgementNumber","departmentId","serviceId" , "apiKey"]
-admin.site.register(cms_application_2 , cms_application_2_Admin)
+admin.site.register(cms_application , cms_application_Admin)
 
 
 class serviceAdmin(admin.ModelAdmin):

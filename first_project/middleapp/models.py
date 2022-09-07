@@ -13,7 +13,7 @@ def get_current_time():
     return tm
 
 
-class cms_application_2(models.Model):
+class cms_application(models.Model):
 
     apiKey = models.CharField(max_length=100)
     applicationId  = models.CharField(max_length=200)
@@ -47,7 +47,7 @@ class cms_application_2(models.Model):
     updated_time = models.CharField(max_length=50 , default= get_current_time())
 
     class Meta:
-        db_table = "cms_application_2"
+        db_table = "cms_application"
 
 class service(models.Model):
     
