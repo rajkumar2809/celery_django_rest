@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+# load the .env file
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,6 +31,8 @@ SECRET_KEY = 'django-insecure-6rptn9n)&!9c@0l-mh@wg3s)o)0jcue@e)lu$_v1f-l@zgu+ik
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = [str(os.getenv('HOSTN'))]
+
 
 
 # Application definition
@@ -81,26 +86,66 @@ WSGI_APPLICATION = 'first_project.wsgi.application'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
 
+# below is the static database setting for production
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'ortpsa_result',
+#        'USER': 'postgres',
+#        'PASSWORD': 'postgres',
+#     #    'HOST': '127.0.0.1',
+#     #    'PORT': '5432',
+#    },
+#     'secondary': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'eappeal_bse',
+#         'CLIENT': {
+#            'host': "mongodb://staging.secuodsoft.com",
+#             'port': 27666
+#         }
+
+#      }
+# }
+
+
+# # #local db
+# DATABASES = {
+#        'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     },
+#     'secondary': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'eappeal_bse',
+#         # 'CLIENT': {
+#         #    'host': "mongodb://staging.secuodsoft.com",
+#         #     'port': 27666
+#         # }
+
+#      }
+# }
+
+
+# # Below is the dynamic database settings
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'ortpsa_result',
-       'USER': 'postgres',
-       'PASSWORD': 'postgres',
-    #    'HOST': '127.0.0.1',
-    #    'PORT': '5432',
+       'NAME': str(os.getenv('POST_G_DB')),
+       'USER': str(os.getenv('POST_G_USER')),
+       'PASSWORD': str(os.getenv('POST_G_PASSWORD')),
+    #    'HOST': str(os.getenv('POST_G_IP')),
+    #    'PORT': str(os.getenv('POST_G_PORT')),
    },
     'secondary': {
         'ENGINE': 'djongo',
-        'NAME': 'eappeal_bse',
+        'NAME':  str(os.getenv('MNG_DB')),
         'CLIENT': {
-           'host': "mongodb://staging.secuodsoft.com",
-            'port': 27666
+           'host': str(os.getenv('MNG_IP')),
+            'port': str(os.getenv('MNG_PORT'))
         }
 
      }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -132,7 +177,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
 
 
 

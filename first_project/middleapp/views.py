@@ -99,7 +99,6 @@ def enc_post(request , st):
     if data == False:
         print(data)
         msg = "Service Id not found"
-        # response ={"status_code":421 , "msg":msg} 
         response = {"status_code":409 , "msg":msg}
         return HttpResponse("{}".format(response))
 
@@ -107,16 +106,21 @@ def enc_post(request , st):
         try:
             decode_byte = enc_d.decode()
             responsess = send_enc_data_to_celery.delay(decode_byte , service_Id)
+            msg = "Data Received"
+            response = {"status_code":444 , "msg":msg}
             logger = logging.getLogger('main')
-            logger.info(str(service_Id) + " " + "-" +  " " + responsess.id)
+            logger.info(str(service_Id) + " " + "-" +  " " + responsess.id + " " + "-" + " " +  str(response['status_code']) + " " + "-" + " " + response['msg']) 
 
 
             result = AsyncResult(responsess.id)
             rtrn = result.get()
+            print(rtrn['status_code'] , type(rtrn['status_code']))
             logger.info(responsess.id + " " + "-" +  " " + str(rtrn['status_code']) + " " + "-" +  " " + rtrn['msg'])
             return HttpResponse("{}".format(rtrn))
             
         except json.decoder.JSONDecodeError:
             msg = "Invalid request"
-            response ={"status_code":434 , "msg":msg} 
+            response ={"status_code":434 , "msg":msg}
+            logger = logging.getLogger('main')
+            logger.info(str(service_Id) + " " + "-" +  " " +  " " + "-" + " " +  str(response)) 
             return HttpResponse("{}".format(response))

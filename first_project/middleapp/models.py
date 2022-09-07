@@ -70,3 +70,12 @@ class service(models.Model):
 
     class Meta:
         db_table = "service"
+
+class office_middleware(models.Model):
+    
+    officeId = models.IntegerField()
+    officeName = models.CharField(max_length= 300)
+    departmentId = models.IntegerField()
+
+    class Meta:
+        db_table = "office_middleware"
