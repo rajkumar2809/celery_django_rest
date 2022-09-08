@@ -134,14 +134,14 @@ DATABASES = {
        'USER': str(os.getenv('POST_G_USER')),
        'PASSWORD': str(os.getenv('POST_G_PASSWORD')),
     #    'HOST': str(os.getenv('POST_G_IP')),
-    #    'PORT': str(os.getenv('POST_G_PORT')),
+    #    'PORT': int(os.getenv('POST_G_PORT')),
    },
     'secondary': {
         'ENGINE': 'djongo',
         'NAME':  str(os.getenv('MNG_DB')),
         'CLIENT': {
            'host': str(os.getenv('MNG_IP')),
-            'port': str(os.getenv('MNG_PORT'))
+            'port': int(os.getenv('MNG_PORT'))
         }
 
      }
