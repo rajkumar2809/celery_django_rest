@@ -159,10 +159,15 @@ def send_enc_data_to_celery(token  , sid):
                     # Validation for application_Status , application_Status must be 1 digits 
                     # print("the application_Status is " ,application_Status )
                     # print("type of the application_Status is " ,type(application_Status ))
-                    if (application_Status == "" or int(application_Status) > 9 ):
-                        msg = "application_Status is Invalid "
-                        response = {"status_code":431,"msg":msg}             
-                        return response
+                    try:
+                        if (application_Status == "" or int(application_Status) > 9 ):
+                            msg = "Inavlid Application Status "
+                            response = {"status_code":431,"msg":msg}             
+                            return response
+                    except Exception as e:
+                            msg = "Invalid Application Status  "
+                            response = {"status_code":438,"msg":msg}             
+                            return response
 
                     # Validation for applicant_Name , applicant_Name mustn't be empty.
                     print("the applicant_Name is " ,applicant_Name )
