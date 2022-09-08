@@ -23,5 +23,5 @@ urlpatterns = [
   path('delete/' , views.delete_all , name= "delete"),
   path('application_cms/', views.cms_post),
   path('application_get_cms/', views.cms_get),
-  path('md/<str:st>', views.enc_post),
+  path('mdl/<str:st>', views.enc_post),
 ]
