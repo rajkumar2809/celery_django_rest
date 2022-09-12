@@ -28,7 +28,7 @@ TEMPLATE_DIR = os.path.join(BASE_DIR , 'templates')
 SECRET_KEY = 'django-insecure-6rptn9n)&!9c@0l-mh@wg3s)o)0jcue@e)lu$_v1f-l@zgu+ik'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 # ALLOWED_HOSTS = [str(os.getenv('HOSTN'))]
@@ -225,3 +225,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# not to show the rest api page on the browser .
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
