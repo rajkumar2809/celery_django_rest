@@ -106,10 +106,14 @@ def send_enc_data_to_celery(token  , sid):
                     # Validation for department code , department code must be 2 digits 
                     # print("the district is " ,department_Id )
                     # print("type of the district is " ,type(department_Id ))
-                    if (department_Id == "" or len(department_Id) > 2 ):
+                    try:
+                        if (department_Id == "" or int(department_Id) > 99 ):
                             msg = "Department  Id is Invalid"
-                            response = {"status_code":429,"msg":msg}
-                            
+                            response = {"status_code":429,"msg":msg}       
+                            return response
+                    except Exception as e:
+                            msg = "Department  Id is Invalid"  + " " + e
+                            response = {"status_code":430,"msg":msg}
                             return response
 
                     check_srv_dept = service.objects.using('secondary').all().filter(departmentId = department_Id)
@@ -129,9 +133,15 @@ def send_enc_data_to_celery(token  , sid):
                     # Validation for district id , district id must be 2 digits 
                     # print("the district is " ,district_Id )
                     # print("type of the district is " ,type(district_Id ))
-                    if (district_Id == "" or len(district_Id) > 2 ):
+                    try:
+                        if (district_Id == "" or int(district_Id) > 99 ):
                             msg = "District Id is Invalid"
-                            response = {"status_code":429,"msg":msg}
+                            response = {"status_code":448,"msg":msg}
+                            
+                            return response
+                    except Exception as e:               
+                            msg = "District Id is Invalid" + " " + e
+                            response = {"status_code":449,"msg":msg}
                             
                             return response
 
@@ -150,9 +160,16 @@ def send_enc_data_to_celery(token  , sid):
                     # Validation for office_Id , office_Id must be in between 4 digits 
                     # print("the office_Id is " ,office_Id )
                     # print("type of the office_Id is " ,type(office_Id ))
-                    if (office_Id == "" or len(office_Id) > 5 ):
-                        msg = "Office Id is Invalid"
-                        response = {"status_code":430,"msg":msg}
+                    try:
+                        if (office_Id == "" or int(office_Id) > 10000 ):
+                            msg = "Office Id is Invalid"
+                            response = {"status_code":430,"msg":msg}
+                            
+                            return response
+                    except Exception as e:
+
+                        msg = "Office Id is Invalid"  + " " + e
+                        response = {"status_code":434,"msg":msg}
                         
                         return response
 
