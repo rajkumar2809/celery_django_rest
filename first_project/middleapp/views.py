@@ -224,7 +224,7 @@ def update_application(token , sid):
                             return HttpResponse("{}".format(response))
 
                     try:
-                        app_exist = cms_application_2.objects.using('secondary').all().filter( applicationId = application_Id , serviceId = service_Id , departmentId = int(department_Id) , 
+                        app_exist = cms_application.objects.using('secondary').all().filter( applicationId = application_Id , serviceId = service_Id , departmentId = int(department_Id) , 
                         acknowledgementNumber = acknowledgement_Number , apiKey = api_Key , districtId = district_Id  )
                         if app_exist:
                             print(app_exist)
