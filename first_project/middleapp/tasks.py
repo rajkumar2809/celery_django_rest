@@ -311,7 +311,7 @@ def send_enc_data_to_celery(token  , sid):
                 invalid_data.append(response)
                 save_invalid_data_obj = Invalid_CMS_Application(serviceId = int(service_Id) , encrypted_data = token ,data = invalid_data )
                 save_invalid_data_obj.save(using="secondary")
-                return invalid_data    else:
+                return invalid_data    
     else:
         msg = "Api key not found"
         response = {"status_code":411,"msg":msg}
