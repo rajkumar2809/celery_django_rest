@@ -41,6 +41,7 @@ def send_enc_data_to_celery(token  , sid):
     data = service.objects.using('secondary').all().filter(serviceId = service_Id)
     print(data[0].apiKey)
     decryption_key = data[0].apiKey
+    invalid_data = []
     
 
     if (decryption_key != ""):
@@ -49,8 +50,6 @@ def send_enc_data_to_celery(token  , sid):
         try:
             # print("Inside try block and decryption key is {}".format(decryption_key))
             (ct, iv) = crypted_token.split("::", 1)
-            # print("===========ct is=============",ct)
-            # print("===========iv is=============",iv)
             ct = base64.b64decode(ct)
             iv = binascii.unhexlify(iv)
             cipher = Cipher(algorithms.AES(key), modes.CTR(iv), backend=default_backend())
@@ -104,46 +103,45 @@ def send_enc_data_to_celery(token  , sid):
 
                     # Apply validation for all the data before saving into the database
                     # Validation for department code , department code must be 2 digits 
-                    # print("the district is " ,department_Id )
-                    # print("type of the district is " ,type(department_Id ))
+
                     try:
                         if (department_Id == "" or int(department_Id) > 99 ):
                             msg = "Department  Id is Invalid"
-                            response = {"status_code":429,"msg":msg}       
-                            return response
+                            response = {"status_code":429,"msg":msg}    
+                            invalid_data.append(response)   
+                            # return response
                     except Exception as e:
                             msg = "Department  Id is Invalid"  + " " + e
                             response = {"status_code":430,"msg":msg}
-                            return response
+                            invalid_data.append(response)
+                            # return response
 
                     check_srv_dept = service.objects.using('secondary').all().filter(departmentId = department_Id)
                     if not check_srv_dept:
                         msg = "Service Id and Department Id mismatched"
                         response = {"status_code":435,"msg":msg}
-                        
-                        return response
+                        invalid_data.append(response)
+                        # return response
 
                     check_ofc_id = office_middleware.objects.using('secondary').all().filter(officeId = int(office_Id) , departmentId = department_Id)
                     if not check_ofc_id:
                         msg = "Office Id Not exists with this department id"
                         response = {"status_code":436,"msg":msg}
-                        
-                        return response
+                        invalid_data.append(response)
+                        # return response
                                       
                     # Validation for district id , district id must be 2 digits 
-                    # print("the district is " ,district_Id )
-                    # print("type of the district is " ,type(district_Id ))
                     try:
                         if (district_Id == "" or int(district_Id) > 99 ):
                             msg = "District Id is Invalid"
                             response = {"status_code":448,"msg":msg}
-                            
-                            return response
+                            invalid_data.append(response)
+                            # return response
                     except Exception as e:               
                             msg = "District Id is Invalid" + " " + e
                             response = {"status_code":449,"msg":msg}
-                            
-                            return response
+                            invalid_data.append(response)
+                            # return response
 
                     # Validation for blockId starts here , if block_Id is empty then 0 will sent as block_Id
                     if (block_Id == "" ):
@@ -158,33 +156,31 @@ def send_enc_data_to_celery(token  , sid):
                         grampanchayat_Id = 0
 
                     # Validation for office_Id , office_Id must be in between 4 digits 
-                    # print("the office_Id is " ,office_Id )
-                    # print("type of the office_Id is " ,type(office_Id ))
                     try:
                         if (office_Id == "" or int(office_Id) > 10000 ):
                             msg = "Office Id is Invalid"
                             response = {"status_code":430,"msg":msg}
-                            
-                            return response
+                            invalid_data.append(response)
+                            # return response
                     except Exception as e:
 
                         msg = "Office Id is Invalid"  + " " + e
                         response = {"status_code":434,"msg":msg}
-                        
-                        return response
+                        invalid_data.append(response)
+                        # return response
 
                     # Validation for application_Status , application_Status must be 1 digits 
-                    # print("the application_Status is " ,application_Status )
-                    # print("type of the application_Status is " ,type(application_Status ))
                     try:
                         if (application_Status == "" or int(application_Status) > 9 ):
                             msg = "Inavlid Application Status "
-                            response = {"status_code":431,"msg":msg}             
-                            return response
+                            response = {"status_code":431,"msg":msg} 
+                            invalid_data.append(response)            
+                            # return response
                     except Exception as e:
                             msg = "Invalid Application Status  "
-                            response = {"status_code":438,"msg":msg}             
-                            return response
+                            response = {"status_code":438,"msg":msg}  
+                            invalid_data.append(response)           
+                            # return response
 
                     # Validation for applicant_Name , applicant_Name mustn't be empty.
                     print("the applicant_Name is " ,applicant_Name )
@@ -192,92 +188,72 @@ def send_enc_data_to_celery(token  , sid):
                     if (applicant_Name == "" ):
                             msg = "applicant_Name is Invalid "
                             response = {"status_code":431,"msg":msg}
-                            
-                            return response
+                            invalid_data.append(response)
+                            # return response
 
                     # Validation for applicant_Address starts here , if applicant_Address is empty then N/A will be sent as applicant_Address
                     if (applicant_Address == "" ):
                         applicant_Address = "N/A"
                     
                     # Validation for applicant_PhoneNo , applicant_PhoneNo mustn't be empty.
-                    # print("the applicant_PhoneNo is " ,applicant_PhoneNo )
-                    # print("type of the applicant_PhoneNo is " ,type(applicant_PhoneNo ))
-                    # print("length of mobile number is" ,  len(applicant_PhoneNo))
                     if (applicant_PhoneNo == "" or len(applicant_PhoneNo) != 10):
                             msg = "applicant_PhoneNo is Invalid "
                             response = {"status_code":432,"msg":msg}
-                            
-                            return response
-
+                            invalid_data.append(response)
+                            # return response
                     # Validation for delivery_Status , delivery_Status mustn't be empty.
-                    # print("the delivery_Status is " ,delivery_Status )
-                    # print("type of the delivery_Status is " ,type(delivery_Status ))
                     if (delivery_Status == ""):
                         delivery_Status = "N/A"
 
                     # Validation for delivery_Date , delivery_Date mustn't be empty.
-                    # print("the delivery_Date is " ,delivery_Date )
-                    # print("type of the delivery_Date is " ,type(delivery_Date ))
                     if (delivery_Date == ""):
                         delivery_Date = "N/A"
-
                     
                     # Validation for rejected_Reason , rejected_Reason mustn't be empty.
-                    # print("the rejected_Reason is " ,rejected_Reason )
-                    # print("type of the rejected_Reason is " ,type(rejected_Reason ))
                     if (rejected_Reason == ""):
-                        rejected_Reason = "N/A"
-        
+                        rejected_Reason = "N/A"      
                     
                     # Validation for designated_OfficerName , designated_OfficerName mustn't be empty.
-                    # print("the designated_OfficerName is " ,designated_OfficerName )
-                    # print("type of the designated_OfficerName is " ,type(designated_OfficerName ))
                     if (designated_OfficerName == ""):
                         msg = "designated_OfficerName is Invalid "
                         response = {"status_code":433,"msg":msg}
-                        
-                        return response
-
+                        invalid_data.append(response)
+                        # return response
                     # Validation for _description , _description mustn't be empty.
-                    # print("the _description is " ,_description )
-                    # print("type of the _description is " ,type(_description ))
                     if (_description == ""):
                         _description = "N/A"
                         msg = "_description is Invalid "
     
                     # Acknowledgement Number Validation
-
-                    # print("the depart code is from api number is",department_Id)
-                    # print("the service code  is from api " ,_service_Id)
                     offc_id = acknowledgement_Number[2:7] # 2 3 4 5 6 
                     dep_num = acknowledgement_Number[7:9] # 7,8
                     srv_id = acknowledgement_Number[9:12] # 9,10,11
-                    # print("the depart code is from acknowledgement number is",dep_num)
-                    # print("the service code  is from acknowledgement number is",dep_num)
 
                     if (_service_Id != srv_id or department_Id != dep_num ):
                         msg = " Invalid Acknowledgement Number " 
                         response = {"status_code":433,"msg":msg} 
-                        
-                        return response
+                        invalid_data.append(response)
+                        # return response
                     try: 
                         check_ackn_ofc_id = office_middleware.objects.using('secondary').all().filter(officeId = int(offc_id) , departmentId = int(dep_num))
                         if not (check_ackn_ofc_id):
                             msg = "Office Id mismatched in acknowledgement number "
                             response = {"status_code":438,"msg":msg}
-                            return response
+                            invalid_data.append(response)
+                            # return response
                     except Exception as e:
                         msg = "Office Id not exist with this department id in acknowledgement number "
                         response = {"status_code":442,"msg":msg}
-                        return response
+                        invalid_data.append(response)
+                        # return response
                             
 
 
                     try:
                         flt_srv = service.objects.using('secondary').all().filter(serviceId = service_Id , departmentId = int(department_Id))
 
-                        if flt_srv:
-                            print("====department have the service====")
+                        if flt_srv and len(invalid_data) == 0:
+                            print("====department have the service and all the data are in correct format====")
                             
                             saveto_cms_db = cms_application (apiKey = api_Key,applicationId = application_Id, acknowledgementNumber = acknowledgement_Number , departmentId = department_Id , serviceId = _service_Id , districtId = district_Id , blockId = block_Id , tahasilId = tahasil_Id ,
                                                             grampanchayatId = grampanchayat_Id , officeId = office_Id , applicationStatus = application_Status , 
@@ -292,25 +268,55 @@ def send_enc_data_to_celery(token  , sid):
                             return response
                         else:
                             msg = "acknowledgement number is invalid . Service code and department code  not matched "
-                            response = {"status_code":420,"msg":msg}                         
-                            return response
-
+                            response = {"status_code":420,"msg":msg} 
+                            invalid_data.append(response)                   
+                            data = invalid_data
+                            msg = "Invalid Data"   
+                            response_tobe = {"msg":msg,"data":data} 
+                            # SAve the invalid data into the database
+                            save_invalid_data_obj = Invalid_CMS_Application(serviceId = int(service_Id) , encrypted_data = token ,data = invalid_data )
+                            save_invalid_data_obj.save(using="secondary")
+                            return response_tobe
                     except Exception as e:
                         msg = "Failed to save the data in the database due to the following error ".format(e)
                         response = {"status_code":413,"msg":msg}
-                        return response
+                        invalid_data.append(response)   
+                        data = invalid_data
+                        msg = "Invalid Data"   
+                        response_tobe = {"msg":msg,"data":data} 
+                        # SAve the invalid data into the database
+                        save_invalid_data_obj = Invalid_CMS_Application(serviceId = int(service_Id) , encrypted_data = token ,data = invalid_data )
+                        save_invalid_data_obj.save(using="secondary")
+                        print("======data save succesfully in invalid cms application table=========")
+
+                        return response_tobe   
 
                 except Exception as e:
                     msg = "Data received partially from application ,Field Name is invalid for {}" . format(e)
                     response = {"status_code":419,"msg":msg}                   
-                    return response
+                    invalid_data.append(response)   
+                    data = invalid_data
+                    msg = "Invalid Data"   
+                    response_tobe = {"msg":msg,"data":data} 
+                    # SAve the invalid data into the database
+                    save_invalid_data_obj = Invalid_CMS_Application(serviceId = int(service_Id) , encrypted_data = token ,data = invalid_data )
+                    save_invalid_data_obj.save(using="secondary")
+                    print("======data save succesfully in invalid cms application table=========")
 
+                    return response_tobe 
         except json.decoder.JSONDecodeError:
                 print("There was a  in input")
                 msg = "Something went wrong due to data mismatched"
                 response = {"status_code":413,"msg":msg}
-                return response
+                invalid_data.append(response)
+                save_invalid_data_obj = Invalid_CMS_Application(serviceId = int(service_Id) , encrypted_data = token ,data = invalid_data )
+                save_invalid_data_obj.save(using="secondary")
+                return invalid_data    else:
     else:
         msg = "Api key not found"
         response = {"status_code":411,"msg":msg}
-        return response
+        invalid_data.append(response)     
+        save_invalid_data_obj = Invalid_CMS_Application(serviceId = int(service_Id) , encrypted_data = token ,data = invalid_data )
+        save_invalid_data_obj.save(using="secondary")
+        print("======data save succesfully in invalid cms application table=========")
+        return invalid_data

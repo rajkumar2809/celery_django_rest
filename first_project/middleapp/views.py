@@ -114,8 +114,9 @@ def enc_post(request , st):
 
             result = AsyncResult(responsess.id)
             rtrn = result.get()
-            print(rtrn['status_code'] , type(rtrn['status_code']))
-            logger.info(responsess.id + " " + "-" +  " " + str(rtrn['status_code']) + " " + "-" +  " " + rtrn['msg'])
+            print(rtrn)
+            # print(rtrn['status_code'] , type(rtrn['status_code']))
+            # logger.info(responsess.id + " " + "-" +  " " + str(rtrn['status_code']) + " " + "-" +  " " + rtrn['msg'])
             return HttpResponse("{}".format(rtrn))
             
         except json.decoder.JSONDecodeError:

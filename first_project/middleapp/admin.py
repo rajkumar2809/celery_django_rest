@@ -12,3 +12,5 @@ admin.site.register(cms_application , cms_application_Admin)
 class serviceAdmin(admin.ModelAdmin):
     list_display = ["id","serviceId" , "serviceName" ,"apiKey", "departmentId" , "departmentName"]
 admin.site.register(service , serviceAdmin)
+
+admin.site.register(Invalid_CMS_Application)

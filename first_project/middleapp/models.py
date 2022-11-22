@@ -79,3 +79,25 @@ class office_middleware(models.Model):
 
     class Meta:
         db_table = "office_middleware"
+
+
+        
+class Invalid_CMS_Application(models.Model):
+
+    serviceId = models.IntegerField()   
+    encrypted_data = models.CharField(max_length=500 , null=True , blank=True)
+    data = models.JSONField()
+
+    creatd_date = models.CharField(max_length=50 ,  default=get_current_date())
+    created_time = models.CharField( max_length=50 , default= get_current_time())
+    updated_date = models.CharField(max_length=50 , default=get_current_date())
+    updated_time = models.CharField(max_length=50 , default= get_current_time())
+
+
+
+    def __str__(self):
+        return str(self.serviceId)
+
+    class Meta:
+        db_table = "Invalid CMS Application"
+        verbose_name = 'Invalid CMS Application'
